@@ -1,19 +1,196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Test Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Arms</title>
     <style>
         body {
-            background-color: white;
-            color: black;
-            text-align: center;
+            background-color: #0e0e0e;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 0;
+        }
+        header {
+            background: linear-gradient(45deg, #ff0066, #6600ff);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        .product, .ad {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .product img, .ad img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #333;
+        }
+        .product h2, .ad h2 {
+            color: #ff66cc;
+        }
+        .product p, .ad p {
+            color: #ccc;
+        }
+        .buy-button, .ad-button {
+            background-color: #6600ff;
+            border: none;
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .buy-button:hover, .ad-button:hover {
+            background-color: #ff0066;
+        }
+        #cart {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            width: 300px;
+            border-radius: 10px;
+            display: none;
+        }
+        footer {
+            background: #111;
+            text-align: center;
+            padding: 10px;
+            border-top: 2px solid #333;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .toggle-cart-button {
+            background-color: #ff0066;
+            border: none;
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .toggle-cart-button:hover {
+            background-color: #6600ff;
         }
     </style>
 </head>
 <body>
-    <h1>Test Page</h1>
-    <p>If you can see this, the tablet is displaying HTML correctly.</p>
+    <header>
+        <h1>Budget Arms</h1>
+        <button class="toggle-cart-button" id="toggle-cart">Toggle Cart</button>
+    </header>
+    <div class="container">
+        <div class="product" data-name="Cyber Shades" data-price="50">
+            <img src="https://via.placeholder.com/300x200" alt="Product 1">
+            <h2>Cyber Shades</h2>
+            <p>Enhance your vision with these stylish cyberpunk shades.</p>
+            <button class="buy-button">Buy Now</button>
+        </div>
+        
+        <div class="ad">
+            <img src="assets/imgs/np68hOL.jpeg" alt="Ad 1" width="300" height="200">
+            <h2>BrainDance Studios</h2>
+            <p>Experience a new reality with BrainDance VR experiences.</p>
+            <button class="ad-button">Learn More</button>
+        </div>
+
+        <div class="product" data-name="Neon Jacket" data-price="150">
+            <img src="https://via.placeholder.com/300x200" alt="Product 2">
+            <h2>Neon Jacket</h2>
+            <p>Light up the night with this glowing neon jacket.</p>
+            <button class="buy-button">Buy Now</button>
+        </div>
+
+        <div class="ad">
+            <img src="assets/imgs/VNwkPVF.jpeg" alt="Ad 2" width="300" height="200">
+            <h2>Avante</h2>
+            <p>The clothing you will ever need.</p>
+            <button class="ad-button">Learn More</button>
+        </div>
+
+        <div class="product" data-name="Data Chip" data-price="200">
+            <img src="https://via.placeholder.com/300x200" alt="Product 3">
+            <h2>Data Chip</h2>
+            <p>Store your secrets on this high-capacity data chip.</p>
+            <button class="buy-button">Buy Now</button>
+        </div>
+
+        <div class="ad">
+            <img src="assets/imgs/YBHwWAk.jpeg" alt="Ad 3" width="300" height="200">
+            <h2>Arasaka Computing</h2>
+            <p>State of the art Weapon and Eviromental computing systems</p>
+            <button class="ad-button">Learn More</button>
+        </div>
+    </div>
+    <div id="cart">
+        <h2>Your Cart</h2>
+        <ul id="cart-items"></ul>
+        <p>Total: $<span id="cart-total">0</span></p>
+        <button id="checkout-button" class="buy-button">Checkout</button>
+    </div>
+    <footer>
+        <p>© 2077 NeoCity Market. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const cart = [];
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalContainer = document.getElementById('cart-total');
+        const cartElement = document.getElementById('cart');
+        const toggleCartButton = document.getElementById('toggle-cart');
+
+        document.querySelectorAll('.buy-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const productElement = e.target.closest('.product');
+                const productName = productElement.getAttribute('data-name');
+                const productPrice = parseFloat(productElement.getAttribute('data-price'));
+
+                addToCart(productName, productPrice);
+                updateCartDisplay();
+            });
+        });
+
+        toggleCartButton.addEventListener('click', () => {
+            cartElement.style.display = cartElement.style.display === 'none' ? 'block' : 'none';
+        });
+
+        function addToCart(name, price) {
+            const product = cart.find(item => item.name === name);
+            if (product) {
+                product.quantity++;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+        }
+
+        function updateCartDisplay() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - $${item.price} x ${item.quantity}`;
+                cartItemsContainer.appendChild(li);
+
+                total += item.price * item.quantity;
+            });
+
+            cartTotalContainer.textContent = total.toFixed(2);
+        }
+    </script>
 </body>
 </html>
