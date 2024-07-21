@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .item {
+            margin: 10px;
+        }
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Shop</h1>
+    <div class="item">
+        <p>Item 1: $10</p>
+        <button class="button" onclick="buyItem('Item 1', 10)">Buy</button>
+    </div>
+    <div class="item">
+        <p>Item 2: $15</p>
+        <button class="button" onclick="buyItem('Item 2', 15)">Buy</button>
+    </div>
+    <div class="item">
+        <p>Item 3: $20</p>
+        <button class="button" onclick="buyItem('Item 3', 20)">Buy</button>
+    </div>
+
+    <script>
+        function buyItem(name, price) {
+            // Send a message to the game when an item is bought
+            window.external.Call('buyItem', name, price);
+        }
+    </script>
+</body>
+</html>
